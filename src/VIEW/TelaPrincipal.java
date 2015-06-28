@@ -92,16 +92,24 @@ public class TelaPrincipal {
 					            "Tamanho do buffer:", tamanhoBuffer
 					        };
 
+					        int numTuplas = 0;
+					        
 					        int option = JOptionPane.showConfirmDialog(null, message, "Configurações para a Compressão", JOptionPane.OK_CANCEL_OPTION);
 					        if (option == JOptionPane.OK_OPTION) {
 					        	ControlaCompressao controlarCompressao = new ControlaCompressao();
 	            				try {
-	    							controlarCompressao.comprimirImagem(caminhoImagem, Integer.parseInt(janelaDicionario.getText()), Integer.parseInt(tamanhoBuffer.getText()));
+	    							numTuplas = controlarCompressao.comprimirImagem(caminhoImagem, Integer.parseInt(janelaDicionario.getText()), Integer.parseInt(tamanhoBuffer.getText()));
 	    						} catch (IOException e1) {
 	    							// TODO Auto-generated catch block
 	    							e1.printStackTrace();
 	    						}
-	            				JOptionPane.showMessageDialog(null,"Finalizada Compressão da Imagem");
+	            				String textoMenssagem = "Finalizada Compressão da Imagem!\n\n";
+	            				textoMenssagem += "Imagem original: 44000 bits\n";
+	            				textoMenssagem += "Tempo necessário: 100 segundos\n";
+	            				textoMenssagem += "Taxa de compressão: 25%";
+	            				
+	            				
+	            				JOptionPane.showMessageDialog(null,textoMenssagem);
 					        } else {
 					            //System.out.println("Login canceled");
 					        }

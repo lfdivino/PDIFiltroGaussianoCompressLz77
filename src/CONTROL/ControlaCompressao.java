@@ -26,9 +26,10 @@ public class ControlaCompressao {
 	  int searchWindowLen;
 	  int tamanhoBufferLen;
 	  
-	  public void comprimirImagem(String caminhoArquivo, int tamanhoJanela, int tamanhoBuffer) throws IOException{		   
+	  public int comprimirImagem(String caminhoArquivo, int tamanhoJanela, int tamanhoBuffer) throws IOException{		   
 		        searchWindowLen = tamanhoJanela;
 		        tamanhoBufferLen = tamanhoBuffer;
+		        int numTuplas = 0;
 		        
 		        byte[] imagemBytes = imagemParaByte(caminhoArquivo);
 		        
@@ -50,27 +51,27 @@ public class ControlaCompressao {
 
 		      if(caracteresJanela > 0){
 		           if(caracteresJanela <= searchWindowLen){
-		               for(int j=0; j < caracteresJanela; j++){
+		               /*for(int j=0; j < caracteresJanela; j++){
 		                   //gravarArq.printf("%s", rawData[j]+",");
 		                   System.out.print(rawData[j]+",");
-		               }
+		               }*/
 		               caracteresJanela++;
 		           }else{
-		               for(int j=charCnt - searchWindowLen; j < charCnt; j++){
+		               /*for(int j=charCnt - searchWindowLen; j < charCnt; j++){
 		                   //gravarArq.printf("%s", rawData[j]+",");
 		                   System.out.print(rawData[j]+",");
-		               }         
+		               }*/         
 		           }
 		       }else{
 		           //gravarArq.print(" ");
-		           System.out.print(" ");
+		           //System.out.print(" ");
 		           
 		           caracteresJanela++;
 		       }
 		       //gravarArq.print(" | ");
-		       System.out.print(" | ");
+		       //System.out.print(" | ");
 		       
-		       if(rawData.length - charCnt >= tamanhoBufferLen){
+		       /*if(rawData.length - charCnt >= tamanhoBufferLen){
 		           for(int i=0; i < tamanhoBufferLen; i++){
 		                 //gravarArq.printf("%s", rawData[charCnt+i]+",");
 		                 System.out.print(rawData[charCnt+i]+",");
@@ -80,7 +81,7 @@ public class ControlaCompressao {
 		                 //gravarArq.printf("%s", rawData[charCnt+i]+",");
 		                 System.out.print(rawData[charCnt+i]+",");
 		           }
-		       }
+		       }*/
 		       
 		       if(caracteresJanela > 1){
 		           int auxContadorCaracteres = 0;
@@ -114,16 +115,19 @@ public class ControlaCompressao {
 
 		           if(contadorRetornoJanela > 0){
 		               gravarArq.printf("%d,%d,%s", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt+(contadorColetorCaracteres)]);
-		               System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt+(contadorColetorCaracteres)]);
+		               //System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt+(contadorColetorCaracteres)]);
+		               numTuplas++;
 		           }else{
 		               gravarArq.printf("%d,%d,%s", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt]);
-		               System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt]);
+		               //System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt]);
+		               numTuplas++;
 		           }
 		          
 		           
 		       }else{
 		           gravarArq.printf("0,0,%s", rawData[charCnt]);
-		           System.out.printf(" | (0,0,%s)", rawData[charCnt]);
+		           //System.out.printf(" | (0,0,%s)", rawData[charCnt]);
+		           numTuplas++;
 		       }
 		           
 		           gravarArq.printf("%n");
@@ -153,6 +157,7 @@ public class ControlaCompressao {
 		    	//charCnt++;
 		    }//end while loop
 		arq.close();
+		return numTuplas;
 	  }
 	  
 	  public byte[] descomprimirImagem() throws IOException{
