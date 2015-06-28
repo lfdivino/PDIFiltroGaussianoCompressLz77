@@ -44,39 +44,41 @@ public class ControlaCompressao {
 		    charCnt = 0;
 		    contadorJanela = 0;
 		    caracteresJanela = 0;
+		    System.out.println(rawData.length);
+		    System.out.println("");
 		    while(charCnt < rawData.length){
 
-		       if(caracteresJanela > 0){
+		      if(caracteresJanela > 0){
 		           if(caracteresJanela <= searchWindowLen){
 		               for(int j=0; j < caracteresJanela; j++){
 		                   //gravarArq.printf("%s", rawData[j]+",");
-		                   //System.out.print(rawData[j]+",");
+		                   System.out.print(rawData[j]+",");
 		               }
 		               caracteresJanela++;
 		           }else{
 		               for(int j=charCnt - searchWindowLen; j < charCnt; j++){
 		                   //gravarArq.printf("%s", rawData[j]+",");
-		                   //System.out.print(rawData[j]+",");
+		                   System.out.print(rawData[j]+",");
 		               }         
 		           }
 		       }else{
 		           //gravarArq.print(" ");
-		           //System.out.print(" ");
+		           System.out.print(" ");
 		           
 		           caracteresJanela++;
 		       }
 		       //gravarArq.print(" | ");
-		       //System.out.print(" | ");
+		       System.out.print(" | ");
 		       
 		       if(rawData.length - charCnt >= tamanhoBufferLen){
 		           for(int i=0; i < tamanhoBufferLen; i++){
 		                 //gravarArq.printf("%s", rawData[charCnt+i]+",");
-		                 //System.out.print(rawData[charCnt+i]+",");
+		                 System.out.print(rawData[charCnt+i]+",");
 		            }
 		       }else{
 		           for(int i=0; i < rawData.length-charCnt; i++){
 		                 //gravarArq.printf("%s", rawData[charCnt+i]+",");
-		                 //System.out.print(rawData[charCnt+i]+",");
+		                 System.out.print(rawData[charCnt+i]+",");
 		           }
 		       }
 		       
@@ -89,18 +91,18 @@ public class ControlaCompressao {
 		            	   auxContadorRetornoJanela = contador;
 		                   auxContadorCaracteres++;
 		                   posicao = i;
-		                   for(int k = (posicao + 1); k < (posicao+1)+tamanhoBufferLen; k++){
-		                		   int cont = 1;
-		                		   if(cont == 1){
-		                			   if(rawData[k] == rawData[charCnt + cont]){
-		                				   auxContadorCaracteres++;
-		                			   }else{
-		                				   if(rawData[k] == rawData[charCnt + cont] && rawData[k-1] == rawData[(charCnt + (cont-1))]){
-		                					   auxContadorCaracteres++;
-		                				   }
-		                			   }
-		                		   }
+		                   int cont = 1;
+		                   if((posicao + 1) < charCnt){
+		                	   for(int k = (posicao + 1); k < (posicao+1)+tamanhoBufferLen; k++){
+                				   if(rawData[k] == rawData[charCnt + cont] && rawData[k-1] == rawData[(charCnt + (cont-1))] && auxContadorRetornoJanela > 1 && k < charCnt){
+                					   auxContadorCaracteres++;
+                				   }else{
+                					   break;
+                				   }
+		                		   cont++;
+		                	   }
 		                   }
+		                   
 		               }
 		               if(auxContadorCaracteres > contadorColetorCaracteres){
 		            	   contadorColetorCaracteres = auxContadorCaracteres;
@@ -111,32 +113,32 @@ public class ControlaCompressao {
 		           }
 
 		           if(contadorRetornoJanela > 0){
-		               gravarArq.printf("%d,%d,%s", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt+(contadorColetorCaracteres-1)]);
-		               //System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt+(contadorColetorCaracteres-1)]);
+		               gravarArq.printf("%d,%d,%s", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt+(contadorColetorCaracteres)]);
+		               System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt+(contadorColetorCaracteres)]);
 		           }else{
 		               gravarArq.printf("%d,%d,%s", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt]);
-		               //System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt]);
+		               System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt]);
 		           }
 		          
 		           
 		       }else{
 		           gravarArq.printf("0,0,%s", rawData[charCnt]);
-		           //System.out.printf(" | (0,0,%s)", rawData[charCnt]);
+		           System.out.printf(" | (0,0,%s)", rawData[charCnt]);
 		       }
 		           
 		           gravarArq.printf("%n");
-		           //System.out.println();
+		           System.out.println();
 		        
 		      if(contadorColetorCaracteres == 0){
 		          charCnt++;
 		      }else{
-		          charCnt = charCnt + contadorColetorCaracteres-1;
+		          charCnt = charCnt + contadorColetorCaracteres;
 		          charCnt++;
 		          if(caracteresJanela < searchWindowLen){
 		              if(caracteresJanela + contadorColetorCaracteres > searchWindowLen){
 		                  caracteresJanela = searchWindowLen;
 		              }else{
-		                  caracteresJanela += contadorColetorCaracteres-1;
+		                  caracteresJanela += contadorColetorCaracteres;
 		              }
 		          }
 		      }
@@ -146,6 +148,9 @@ public class ControlaCompressao {
 		    contadorRetornoJanela = 0;
 		    contadorColetorCaracteres = 0;
 
+		    	//gravarArq.printf("0,0,%s", rawData[charCnt]);
+		    	//gravarArq.printf("%n");
+		    	//charCnt++;
 		    }//end while loop
 		arq.close();
 	  }
@@ -167,9 +172,14 @@ public class ControlaCompressao {
 			  linha = br.readLine();
 		  }
 		  
+		  br.close();
+		  
 		  matrizLenght += posicoesRepetidas;
+		  //System.out.println(matrizLenght);
 
-		  BufferedReader br2 = new BufferedReader(reader);
+		  FileInputStream stream2 = new FileInputStream("compressao/imagem_original_comprimida.txt");
+		  InputStreamReader reader2 = new InputStreamReader(stream2);
+		  BufferedReader br2 = new BufferedReader(reader2);
 		  String linha2 = br2.readLine();
 		  
 		  byte[] matrizImagem = new byte[matrizLenght];
@@ -179,6 +189,7 @@ public class ControlaCompressao {
 			   int valorRetornoPosicoes = Integer.parseInt(linha2.substring(0, linha2.indexOf(',')));
 			   int valoresASeremAdicionado = Integer.parseInt(linha2.substring(linha2.indexOf(',') + 1, linha2.lastIndexOf(',')));
 			   byte valorASerAdicionadoPorUltimo = Byte.parseByte(linha2.substring(linha2.lastIndexOf(',') + 1, linha2.length()));
+			   //System.out.println(valorASerAdicionadoPorUltimo);
 			   if(valorRetornoPosicoes == 0){
 				   matrizImagem[contadorMatriz] = valorASerAdicionadoPorUltimo;
 				   contadorMatriz++;
@@ -188,12 +199,15 @@ public class ControlaCompressao {
 					   matrizImagem[contadorAux] = matrizImagem[i];
 					   contadorAux++;
 				   }
-				   matrizImagem[contadorAux+1] = valorASerAdicionadoPorUltimo;
-				   contadorMatriz += contadorAux;
+				   matrizImagem[contadorAux] = valorASerAdicionadoPorUltimo;
+				   contadorMatriz = contadorAux+1;
+				   contadorAux = 0;
 			   }
 
-			  linha = br.readLine();
+			  linha2 = br2.readLine();
 		  }
+		  
+		  br2.close();
 		  
 		  return matrizImagem;
 	  }
