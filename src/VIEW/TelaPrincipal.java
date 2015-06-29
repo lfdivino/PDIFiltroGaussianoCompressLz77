@@ -59,7 +59,7 @@ public class TelaPrincipal {
 					            "Tamanho da Máscara:", tamanhoMascara
 					        };
 
-					        int option = JOptionPane.showConfirmDialog(null, message, "Configurações Filtro Gaussiano", JOptionPane.OK_CANCEL_OPTION);
+					        int option = JOptionPane.showConfirmDialog(null, message, "Filtro Gaussiano", JOptionPane.OK_CANCEL_OPTION);
 					        if (option == JOptionPane.OK_OPTION) {
 					        	if(desvio == null || desvio.equals("")){
 									JOptionPane.showMessageDialog(null,"Selecione uma imagem antes de aplicar o filtro!");
@@ -91,22 +91,42 @@ public class TelaPrincipal {
 					            "Janela de dicionario:", janelaDicionario,
 					            "Tamanho do buffer:", tamanhoBuffer
 					        };
-
-					        int numTuplas = 0;
+					        int tamanhoJanela = 0;
+					        int tamanhoBufferEscolhido = 0;
+					        int[] dadosCompressao = new int[2];
+					        long tempoInicial = 0;
+					        long tempoFinal = 0;
 					        
-					        int option = JOptionPane.showConfirmDialog(null, message, "Configurações para a Compressão", JOptionPane.OK_CANCEL_OPTION);
+					        int option = JOptionPane.showConfirmDialog(null, message, "Compressão LZ77", JOptionPane.OK_CANCEL_OPTION);
 					        if (option == JOptionPane.OK_OPTION) {
 					        	ControlaCompressao controlarCompressao = new ControlaCompressao();
 	            				try {
-	    							numTuplas = controlarCompressao.comprimirImagem(caminhoImagem, Integer.parseInt(janelaDicionario.getText()), Integer.parseInt(tamanhoBuffer.getText()));
-	    						} catch (IOException e1) {
+	            					tamanhoJanela = Integer.parseInt(janelaDicionario.getText());
+	            					tamanhoBufferEscolhido = Integer.parseInt(tamanhoBuffer.getText());
+	            					tempoInicial = System.currentTimeMillis();
+	    							dadosCompressao = controlarCompressao.comprimirImagem(caminhoImagem, Integer.parseInt(janelaDicionario.getText()), Integer.parseInt(tamanhoBuffer.getText()));
+	    							tempoFinal = System.currentTimeMillis();
+	            				} catch (IOException e1) {
 	    							// TODO Auto-generated catch block
 	    							e1.printStackTrace();
 	    						}
+	            				
+	            				int bitsJanela = controlarCompressao.contagemBits(tamanhoJanela);
+	            				int bitsBuffer = controlarCompressao.contagemBits(tamanhoBufferEscolhido);
+	            				long tempoExecucao = (tempoFinal - tempoInicial);
+	            				tempoExecucao = tempoExecucao/60;
+	            				
+	            				System.out.println("[0]: " + dadosCompressao[0]);
+	            				System.out.println("[1]: " + dadosCompressao[1]);
+	            				System.out.println("Bits Janela: " + bitsJanela);
+	            				System.out.println("Bits Buffer: " + bitsBuffer);
+	            				
+	            				float porcentagemCompressao = controlarCompressao.porcentagemCompressao(dadosCompressao, bitsJanela, bitsBuffer);
+	            				
 	            				String textoMenssagem = "Finalizada Compressão da Imagem!\n\n";
-	            				textoMenssagem += "Imagem original: 44000 bits\n";
-	            				textoMenssagem += "Tempo necessário: 100 segundos\n";
-	            				textoMenssagem += "Taxa de compressão: 25%";
+	            				textoMenssagem += "Imagem original: " +dadosCompressao[0]+ " bytes\n";
+	            				textoMenssagem += "Tempo necessário: " + tempoExecucao + " segundos\n";
+	            				textoMenssagem += "Taxa de compressão: " + porcentagemCompressao + " %";
 	            				
 	            				
 	            				JOptionPane.showMessageDialog(null,textoMenssagem);
@@ -178,10 +198,11 @@ public class TelaPrincipal {
         painel_esquerdo.setBorder(BorderFactory.createEtchedBorder());
         painel_direito.setBorder(BorderFactory.createEtchedBorder());
         
-        painel_esquerdo.setLayout(new GridLayout(4,1,10,200));
+        painel_esquerdo.setLayout(new GridLayout(0, 1, 20, 100));
+        painel_esquerdo.setSize(300, 100);
+//        painel_esquerdo.setSize(300, 500);
         tela.setLayout(new GridLayout(1,2,10,0));
         
-        painel_esquerdo.setSize(300, 500);
         painel_direito.setSize(700, 600);
         tela.add(painel_esquerdo);
         tela.add(painel_direito);

@@ -26,10 +26,11 @@ public class ControlaCompressao {
 	  int searchWindowLen;
 	  int tamanhoBufferLen;
 	  
-	  public int comprimirImagem(String caminhoArquivo, int tamanhoJanela, int tamanhoBuffer) throws IOException{		   
+	  public int[] comprimirImagem(String caminhoArquivo, int tamanhoJanela, int tamanhoBuffer) throws IOException{		   
 		        searchWindowLen = tamanhoJanela;
 		        tamanhoBufferLen = tamanhoBuffer;
-		        int numTuplas = 0;
+		        int[] dadosCompressao = new int[2];
+		        dadosCompressao[1] = 0;
 		        
 		        byte[] imagemBytes = imagemParaByte(caminhoArquivo);
 		        
@@ -45,8 +46,8 @@ public class ControlaCompressao {
 		    charCnt = 0;
 		    contadorJanela = 0;
 		    caracteresJanela = 0;
-		    System.out.println(rawData.length);
-		    System.out.println("");
+		    dadosCompressao[0] = rawData.length;
+
 		    while(charCnt < rawData.length){
 
 		      if(caracteresJanela > 0){
@@ -116,18 +117,18 @@ public class ControlaCompressao {
 		           if(contadorRetornoJanela > 0){
 		               gravarArq.printf("%d,%d,%s", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt+(contadorColetorCaracteres)]);
 		               //System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt+(contadorColetorCaracteres)]);
-		               numTuplas++;
+		               dadosCompressao[1]++;
 		           }else{
 		               gravarArq.printf("%d,%d,%s", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt]);
 		               //System.out.printf(" | (%d,%d,%s)", contadorRetornoJanela, contadorColetorCaracteres, rawData[charCnt]);
-		               numTuplas++;
+		               dadosCompressao[1]++;
 		           }
 		          
 		           
 		       }else{
 		           gravarArq.printf("0,0,%s", rawData[charCnt]);
 		           //System.out.printf(" | (0,0,%s)", rawData[charCnt]);
-		           numTuplas++;
+		           dadosCompressao[1]++;
 		       }
 		           
 		           gravarArq.printf("%n");
@@ -157,7 +158,7 @@ public class ControlaCompressao {
 		    	//charCnt++;
 		    }//end while loop
 		arq.close();
-		return numTuplas;
+		return dadosCompressao;
 	  }
 	  
 	  public byte[] descomprimirImagem() throws IOException{
@@ -240,4 +241,47 @@ public class ControlaCompressao {
 	                throw new Exception("Erro ao converter os bytes recebidos para imagem");
 	        }
 	    }
+	    
+	    public int contagemBits(int tamanhoCampo){
+	    	int numBits = 0;
+	    	
+	    	if(tamanhoCampo == 1){
+	    		numBits = 1;
+	    	}else if(tamanhoCampo <= 2){
+	    		numBits = 2;
+	    	}else if(tamanhoCampo > 2 && tamanhoCampo <= 4){
+	    		numBits = 3;
+	    	}else if(tamanhoCampo > 4 && tamanhoCampo <= 8){
+	    		numBits = 4;
+	    	}else if(tamanhoCampo > 8 && tamanhoCampo <= 16){
+	    		numBits = 5;
+	    	}else if(tamanhoCampo > 16 && tamanhoCampo <= 32){
+	    		numBits = 6;
+	    	}else if(tamanhoCampo > 32 && tamanhoCampo <= 64){
+	    		numBits = 7;
+	    	}else if(tamanhoCampo > 64 && tamanhoCampo <= 128){
+	    		numBits = 8;
+	    	}else if(tamanhoCampo > 128 && tamanhoCampo <= 256){
+	    		numBits = 9;
+	    	}else if(tamanhoCampo > 256 && tamanhoCampo <= 512){
+	    		numBits = 10;
+	    	}else if(tamanhoCampo > 512 && tamanhoCampo <= 1024){
+	    		numBits = 11;
+	    	}else if(tamanhoCampo > 1024 && tamanhoCampo <= 2048){
+	    		numBits = 12;
+	    	}
+	    	
+	    	return numBits;	    
+	    }
+	    
+	    public float porcentagemCompressao(int[] dadosCompressao, int bitsJanela, int bitsBuffer){
+    		float porcentagemCompressao = 0;
+    		int totalBitsCompressao = (bitsJanela + bitsBuffer + 8)*dadosCompressao[1];
+    		
+    		porcentagemCompressao = dadosCompressao[0]*8;
+    		porcentagemCompressao = porcentagemCompressao/totalBitsCompressao;
+    		porcentagemCompressao = porcentagemCompressao*100;
+    		
+    		return porcentagemCompressao;
+    	}
 }
