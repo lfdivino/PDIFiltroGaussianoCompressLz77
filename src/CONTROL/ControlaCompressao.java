@@ -26,8 +26,9 @@ public class ControlaCompressao {
 	  int searchWindowLen;
 	  int tamanhoBufferLen;
 	  
-	  public int[] comprimirImagem(String caminhoArquivo, int tamanhoJanela, int tamanhoBuffer) throws IOException{		   
-		        searchWindowLen = tamanhoJanela;
+	  public int[] comprimirImagem(int tamanhoJanela, int tamanhoBuffer) throws IOException{		   
+		  String caminhoArquivo = "imagens/imagem_filtro.jpg";      
+		  searchWindowLen = tamanhoJanela;
 		        tamanhoBufferLen = tamanhoBuffer;
 		        int[] dadosCompressao = new int[2];
 		        dadosCompressao[1] = 0;
@@ -39,7 +40,7 @@ public class ControlaCompressao {
 		       
 		        rawData = imagemBytes;
 	    
-		    FileWriter arq = new FileWriter("compressao/imagem_original_comprimida.txt");
+		    FileWriter arq = new FileWriter("compressao/imagem_comprimida.txt");
 		    PrintWriter gravarArq = new PrintWriter(arq);
 		      
 
@@ -96,11 +97,13 @@ public class ControlaCompressao {
 		                   int cont = 1;
 		                   if((posicao + 1) < charCnt){
 		                	   for(int k = (posicao + 1); k < (posicao+1)+tamanhoBufferLen; k++){
-                				   if(rawData[k] == rawData[charCnt + cont] && rawData[k-1] == rawData[(charCnt + (cont-1))] && auxContadorRetornoJanela > 1 && k < charCnt){
-                					   auxContadorCaracteres++;
-                				   }else{
-                					   break;
-                				   }
+		                		   if(k < rawData.length){
+	                				   if(rawData[k] == rawData[charCnt + cont] && rawData[k-1] == rawData[(charCnt + (cont-1))] && auxContadorRetornoJanela > 1 && k < charCnt){
+	                					   auxContadorCaracteres++;
+	                				   }else{
+	                					   break;
+	                				   }
+		                		   }
 		                		   cont++;
 		                	   }
 		                   }
@@ -132,7 +135,7 @@ public class ControlaCompressao {
 		       }
 		           
 		           gravarArq.printf("%n");
-		           System.out.println();
+		           //System.out.println();
 		        
 		      if(contadorColetorCaracteres == 0){
 		          charCnt++;
@@ -164,7 +167,7 @@ public class ControlaCompressao {
 	  public byte[] descomprimirImagem() throws IOException{
 
 		  int contadorMatriz = 0;
-		  FileInputStream stream = new FileInputStream("compressao/imagem_original_comprimida.txt");
+		  FileInputStream stream = new FileInputStream("compressao/imagem_comprimida.txt");
 		  InputStreamReader reader = new InputStreamReader(stream);
 		  BufferedReader br = new BufferedReader(reader);
 		  String linha = br.readLine();
@@ -183,7 +186,7 @@ public class ControlaCompressao {
 		  matrizLenght += posicoesRepetidas;
 		  //System.out.println(matrizLenght);
 
-		  FileInputStream stream2 = new FileInputStream("compressao/imagem_original_comprimida.txt");
+		  FileInputStream stream2 = new FileInputStream("compressao/imagem_comprimida.txt");
 		  InputStreamReader reader2 = new InputStreamReader(stream2);
 		  BufferedReader br2 = new BufferedReader(reader2);
 		  String linha2 = br2.readLine();
@@ -231,7 +234,7 @@ public class ControlaCompressao {
 	    public void ByteParaImagem(byte[] bytes) throws Exception {
 	        byte[] imgBytes = bytes;
 	        try {
-	            FileOutputStream fos = new FileOutputStream("imagens/java.jpg");
+	            FileOutputStream fos = new FileOutputStream("compressao/imagem_descomprimida.jpg");
 	            fos.write(imgBytes);
 	            FileDescriptor fd = fos.getFD();
 	            fos.flush();

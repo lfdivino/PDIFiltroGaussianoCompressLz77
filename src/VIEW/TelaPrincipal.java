@@ -104,7 +104,7 @@ public class TelaPrincipal {
 	            					tamanhoJanela = Integer.parseInt(janelaDicionario.getText());
 	            					tamanhoBufferEscolhido = Integer.parseInt(tamanhoBuffer.getText());
 	            					tempoInicial = System.currentTimeMillis();
-	    							dadosCompressao = controlarCompressao.comprimirImagem(caminhoImagem, Integer.parseInt(janelaDicionario.getText()), Integer.parseInt(tamanhoBuffer.getText()));
+	    							dadosCompressao = controlarCompressao.comprimirImagem(Integer.parseInt(janelaDicionario.getText()), Integer.parseInt(tamanhoBuffer.getText()));
 	    							tempoFinal = System.currentTimeMillis();
 	            				} catch (IOException e1) {
 	    							// TODO Auto-generated catch block
@@ -116,10 +116,6 @@ public class TelaPrincipal {
 	            				long tempoExecucao = (tempoFinal - tempoInicial);
 	            				tempoExecucao = tempoExecucao/60;
 	            				
-	            				System.out.println("[0]: " + dadosCompressao[0]);
-	            				System.out.println("[1]: " + dadosCompressao[1]);
-	            				System.out.println("Bits Janela: " + bitsJanela);
-	            				System.out.println("Bits Buffer: " + bitsBuffer);
 	            				
 	            				float porcentagemCompressao = controlarCompressao.porcentagemCompressao(dadosCompressao, bitsJanela, bitsBuffer);
 	            				

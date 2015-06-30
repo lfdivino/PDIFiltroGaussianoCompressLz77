@@ -3,6 +3,10 @@ package CONTROL;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
 import java.awt.image.Kernel;
+import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class FiltroGaussiano {
 
@@ -56,6 +60,14 @@ public class FiltroGaussiano {
 		convolucaoETranposicao(kernel, outPixels, inPixels, altura, comprimento, alpha, CLAMP_EDGES);
 
         imagemGaussiana.setRGB( 0, 0, comprimento, altura, inPixels, 0, comprimento );
+        
+        try {
+			ImageIO.write(imagemGaussiana,"jpg",new File("imagens/imagem_filtro.jpg"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
         return imagemGaussiana;
     }
 
